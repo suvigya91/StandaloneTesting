@@ -1,0 +1,25 @@
+#-------------------------Applications----------------------
+simulator                = 'Amber'          # Simulator to be loaded
+
+#-------------------------General---------------------------
+num_iterations          = 1                 # Number of iterations of Simulation-Analysis
+start_iter              = 0                 # Iteration number with which to start
+num_CUs 		= 4                # Number of tasks or Compute Units
+nsave			= 2		    # Iterations after which output is transferred to local machine
+
+#-------------------------Simulation-----------------------
+num_cores_per_sim_cu    = 1                 # Number of cores per Simulation Compute Units
+md_input_file           = './inp_files/mdshort.in'    # Entire path to MD Input file - Do not use $HOME or the likes
+minimization_input_file = './inp_files/min.in'        # Entire path to Minimization file - Do not use $HOME or the likes
+initial_crd_file        = './inp_files/penta.crd'     # Entire path to Coordinates file - Do not use $HOME or the likes
+top_file                = './inp_files/penta.top'     # Entire path to Topology file - Do not use $HOME or the likes
+min_inf_file		= './inp_files/min1.inf'
+
+
+#-------------Amber specific environment and modules for stampede---------------
+
+stampede_environment	= []
+stampede_module		= ["module load TACC",
+                           "module load python/2.7.9",
+                           "module load netcdf/4.3.2",
+                           "module load hdf5/1.8.13"]

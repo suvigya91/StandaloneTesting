@@ -1,0 +1,28 @@
+
+          -------------------------------------------------------
+          Amber 12 SANDER                              2012
+          -------------------------------------------------------
+
+| Run on 02/27/2016 at 18:13:34
+  [-O]verwriting output
+
+File Assignments:
+|  MDIN: /home1/03894/tg831932/StandaloneTest/user_input/min.in                
+| MDOUT: /home1/03894/tg831932/StandaloneTest/Output/min1.out                  
+|INPCRD: /home1/03894/tg831932/StandaloneTest/user_input/penta.crd             
+|  PARM: /home1/03894/tg831932/StandaloneTest/user_input/penta.top             
+|RESTRT: /home1/03894/tg831932/StandaloneTest/user_input/md1.crd               
+|  REFC: /home1/03894/tg831932/StandaloneTest/user_input/min1.crd              
+| MDVEL: mdvel                                                                 
+|  MDEN: mden                                                                  
+| MDCRD: mdcrd                                                                 
+|MDINFO: /home1/03894/tg831932/StandaloneTest/user_input/min1.inf              
+|  MTMD: mtmd                                                                  
+|INPDIP: inpdip                                                                
+|RSTDIP: rstdip                                                                
+
+|INPTRA: inptraj                                                               
+|
+ 
+ Here is the input file:
+ 

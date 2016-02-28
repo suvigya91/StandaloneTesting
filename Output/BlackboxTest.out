@@ -1,0 +1,6 @@
+TACC: Starting up job 6631882
+TACC: Setting up parallel environment for MVAPICH2+mpispawn.
+TACC: Starting parallel tasks...
+TACC: MPI job exited with code: 1
+ 
+TACC: Shutdown complete. Exiting.

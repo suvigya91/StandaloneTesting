@@ -1,0 +1,30 @@
+{
+	"machine_configs":{
+        	"*": {
+            		"environment"   : {"FOO": "bar"},
+            		"pre_exec"      : [],
+            		"executable"    : "/bin/bash"
+        	},
+        	"xsede.stampede":{
+                	"working_dir" : "${HOME}",
+			"wall_time"   : "00:10:00",
+	    		"email"       : "suvigya91@gmail.com",
+            		"project"     : "TG-MCB090174",
+            		"queue"       : "development",
+            		"schema"      : "ssh",
+			"username"    : "tg831932"
+		}
+	},
+	"kernal_configs":{
+		"coco":{"executable"  : "pyCoCo"},
+		"amber":{"executable" : "/opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/sander"},
+		"gromacs":{"executable"  : "python"},
+		"lsdmap":{"executable"  : "lsdmap"}
+
+	}
+}
+	
+
+
+
+

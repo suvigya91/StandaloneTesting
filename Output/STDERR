@@ -1,0 +1,19 @@
+
+The following have been reloaded with a version change:
+  1) intel/15.0.2 => intel/13.0.2.146  2) mvapich2/2.1 => mvapich2/1.9a2
+
+forrtl: severe (24): end-of-file during read, unit 5, file /home1/03894/tg831932/StandaloneTest/user_input/min.in
+Image              PC                Routine            Line        Source             
+libintlc.so.5      00002B89A7E7EA1E  Unknown               Unknown  Unknown
+libintlc.so.5      00002B89A7E7D4B6  Unknown               Unknown  Unknown
+libifcore.so.5     00002B89A774B01E  Unknown               Unknown  Unknown
+libifcore.so.5     00002B89A76BAB1E  Unknown               Unknown  Unknown
+libifcore.so.5     00002B89A76BA01D  Unknown               Unknown  Unknown
+libifcore.so.5     00002B89A76F324C  Unknown               Unknown  Unknown
+sander             00000000004DAF7E  Unknown               Unknown  Unknown
+sander             00000000004AEF52  Unknown               Unknown  Unknown
+sander             00000000004AED36  Unknown               Unknown  Unknown
+sander             000000000040E39C  Unknown               Unknown  Unknown
+libc.so.6          0000003FD8A1ED5D  Unknown               Unknown  Unknown
+sander             000000000040E299  Unknown               Unknown  Unknown
+[c557-602.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 1803) exited with status 24
