@@ -128,12 +128,12 @@ class Blackbox():
 
     def transferFile(self):
         #Transfer file to remote machine
-        files = glob.glob('/home/suvigya/StandaloneTest/Output/*')
+        files = glob.glob('%s/workspace/StandaloneTest/Output/*'%self.home)
         for f in files:
             os.remove(f)
         
         print "Transferring files to remote machine"
-        p = subprocess.Popen(['scp', '-r', '%s/workspace/StandaloneTest/'%home , '%s@stampede.tacc.utexas.edu:/%s'%(self.uname,self.wdir)],
+        p = subprocess.Popen(['scp', '-r', '%s/workspace/StandaloneTest/'%self.home , '%s@stampede.tacc.utexas.edu:/%s'%(self.uname,self.wdir)],
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
