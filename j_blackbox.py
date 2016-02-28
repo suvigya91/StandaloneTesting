@@ -14,7 +14,11 @@ from os.path import expanduser
 class Blackbox():
     def __init__(self,
                  name,
-                 resource
+                 resource,
+                 grid = 5,
+                 dims = 3,
+                 num_CUs = 4,
+                 atom = 'protein'
                  ):
         self.pre_exec = []
         self.wdir = None
@@ -29,6 +33,11 @@ class Blackbox():
         self.job_id = None
         self.exitcode = None
         self.home = None
+        self.grid = grid
+        self.dims = dims
+        self.num_CUs = num_CUs
+        self.atom = atom
+
 ##        self.inp_file = [];
 ##        for f in inp_file.split(" "):
 ##            self.inp_file.append(f)
@@ -116,14 +125,24 @@ class Blackbox():
                 slurm_script += "\n\nibrun %s -O -i %s/input/min.in -o %s/Output/min1.out -inf %s/input/min1.inf -r %s/input/md1.crd -p %s/input/penta.top -c %s/input/penta.crd -ref %s/input/min1.crd \n"\
                                                               %(self.exe, pwd, pwd, pwd,pwd,pwd, pwd,pwd)
 
+            elif(self.kernel_name == "coco"):
+                print "CoCo Batch file"
+                slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s/input/penta.top --mdfile %s/input/*.ncdf --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
+                                                            self.exe, self.grid, self.dims, self.num_CUs, pwd,pwd,pwd,pwd,self.atom)
+
 
         #---------------------------------------------------------------------------------------------
         #test stage 2. Test for execution if module check is successful 
         if(stage == 1):
             if (self.kernel_name == "amber"): 
                 print "Amber Batch File"
-                slurm_script += "\n\nibrun %s -O -i %s/user_input/min.in -o %s/Output/min1.out -inf %s/user_input/min1.inf -r %s/user_input/md1.crd -p %s/user_input/penta.top -c %s/user_input/penta.crd -ref %s/user_input/min1.crd \n"\
+                slurm_script += "\n\nibrun %s -O -i %s/user_input/min.in -o %s/Output/min.out -inf %s/user_input/min.inf -r %s/user_input/md.crd -p %s/user_input/penta.top -c %s/user_input/penta.crd -ref %s/user_input/min.crd \n"\
                                                               %(self.exe, pwd, pwd, pwd,pwd,pwd, pwd,pwd)
+
+            elif(self.kernel_name == "coco"):
+                print "CoCo Batch file"
+                slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s/user_input/penta.top --mdfile %s/user_input/*.ncdf --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
+                                                            self.exe, self.grid, self.dims, self.num_CUs, pwd,pwd,pwd,pwd,self.atom)
 
         return slurm_script
 

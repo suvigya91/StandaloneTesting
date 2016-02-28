@@ -11,9 +11,11 @@
 #SBATCH --mail-type=end
 
 
-### amber testing ###
+### coco testing ###
 
 ## ENVIRONMENT
+export PYTHONPATH=/opt/apps/intel13/mvapich2_1_9/python/2.7.9/lib/python2.7/site-packages:/work/02998/ardi/coco_installation/lib/python2.7/site-packages:$PYTHONPATH
+export PATH=/work/02998/ardi/coco_installation/bin:$PATH
 
 ## EXEC
 module load TACC
@@ -23,4 +25,4 @@ module load netcdf/4.3.2
 module load hdf5/1.8.13
 
 
-ibrun /opt/apps/intel13/mvapich2_1_9/amber/12.0/bin/sander -O -i ${HOME}/StandaloneTest/user_input/min.in -o ${HOME}/StandaloneTest/Output/min1.out -inf ${HOME}/StandaloneTest/user_input/min1.inf -r ${HOME}/StandaloneTest/user_input/md1.crd -p ${HOME}/StandaloneTest/user_input/penta.top -c ${HOME}/StandaloneTest/user_input/penta.crd -ref ${HOME}/StandaloneTest/user_input/min1.crd 
+ibrun pyCoCo --grid 5 --dims 3 --frontpoints 4 --topfile ${HOME}/StandaloneTest/input/penta.top --mdfile ${HOME}/StandaloneTest/input/*.ncdf --output ${HOME}/StandaloneTest/Output/pdbs --logfile ${HOME}/StandaloneTest/Output/coco.log --mpi --selection prote
