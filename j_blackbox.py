@@ -122,7 +122,7 @@ class Blackbox():
         if(stage == 0):
             if (self.kernel_name == "amber"): 
                 print "Amber Batch File"
-                slurm_script += "\n\nibrun %s -O -i %s/input/min.in -o %s/Output/min1.out -inf %s/input/min1.inf -r %s/input/md1.crd -p %s/input/penta.top -c %s/input/penta.crd -ref %s/input/min1.crd \n"\
+                slurm_script += "\n\nibrun %s -O -i %s/input/min.in -o %s/Output/min.out -inf %s/input/min.inf -r %s/input/md.crd -p %s/input/penta.top -c %s/input/penta.crd -ref %s/input/min.crd \n"\
                                                               %(self.exe, pwd, pwd, pwd,pwd,pwd, pwd,pwd)
 
             elif(self.kernel_name == "coco"):
@@ -299,6 +299,15 @@ class Blackbox():
         target.close()
 
         self.transferFile()
+
+        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
+        p = subprocess.Popen(command,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
+
         self.job_submit()
         self.job_check()
         self.error_check()
@@ -320,6 +329,14 @@ class Blackbox():
         target.close()
 
         self.transferFile()
+
+        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
+        p = subprocess.Popen(command,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
         self.job_submit()
         self.job_check()
         self.error_check()
