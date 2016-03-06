@@ -50,6 +50,7 @@ class Standalone():
         self.nwcoords = None    #md.crd
         self.refcoords = None   #min.crd
 
+        self.inp_file = inp_files
 ##        self.inp_file = [];
 ##        for f in inp_file.split(" "):
 ##            self.inp_file.append(f)
