@@ -1,4 +1,12 @@
 #jenkins script
+#
+"""
+Tool to test the proper loading of Supercomputer specific environments, modules
+and input files. Checks the execution in 3 phases:
+1. Check for proper initialization of tool
+2. Check for proper modules and environment on Supercomputer
+3. Check for complete execution with user input files
+"""
 
 import json
 import os
@@ -56,6 +64,9 @@ class Standalone():
 ##            self.inp_file.append(f)
 
     #------------------------------------------------------------------------------------------------
+    """
+    Parse user defined input files
+    """
     def inputFiles(self, inp_files):
         for f in inp_files:
             if('mininfile' in f):
@@ -76,6 +87,9 @@ class Standalone():
                 #print 'mdfile= ',self.mdfile
             
     #--------------------------------------------------------------------------------------------------
+    """
+    Copy all the input files from user given path to working directory (~/StandaloneTest/user_input) 
+    """
     def copyFile(self,pwd):
         if (self.mininfile is not None):
             copyfile(self.mininfile, '%s/user_input/%s'%(self.home, os.path.basename(self.mininfile)))
@@ -109,6 +123,9 @@ class Standalone():
 
 
     #-------------------------------------------------------------------------------------------------------
+    """
+    Load all the configurations specific to the resource defined by user
+    """
     def loadConfig(self):
         home = expanduser("~")
         self.home = '%s/workspace/StandaloneTest'%home
@@ -146,6 +163,10 @@ class Standalone():
             raise
 
     #------------------------------------------------------------------------------------------------------
+    """
+    Generate script for job submission on resource
+    """
+    
     def generateSlurm(self,stage):
         self.loadConfig()
         #print self.pre_exec
@@ -369,37 +390,37 @@ class Standalone():
             sys.exit(1)
 
         #self.generateSlurm()
-##        #--------------------------------------------------------------------------------------------------------
-##        #Check if all modules are loaded correctly
-##        files = glob.glob('%s/user_input/*'%self.home)
-##        for f in files:
-##            os.remove(f)
-##
-##        slurm_script = self.generateSlurm(0)
-##       
-##        target = open('slurm_script.slurm','w')
-##        target.write(slurm_script)
-##        target.close()
-##
-##        self.transferFile()
-##
-##        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
-##        p = subprocess.Popen(command,
-##                             stdin=subprocess.PIPE,
-##                             stdout=subprocess.PIPE,
-##                             stderr=subprocess.PIPE)
-##        stdout, stderr = p.communicate()
-##
-##
-##        self.job_submit()
-##        self.job_check()
-##        self.error_check()
-##        self.cleanup()
-##        if(self.exitcode == 1):
-##            print "Modules incorrectly loaded, check STDERR file. Also update configs/%s.wcfg"%self.kernel_name
-##            sys.exit(1)
-##        else:
-##            print "All the modules are loaded correctly."
+        #--------------------------------------------------------------------------------------------------------
+        #Check if all modules are loaded correctly
+        files = glob.glob('%s/user_input/*'%self.home)
+        for f in files:
+            os.remove(f)
+
+        slurm_script = self.generateSlurm(0)
+       
+        target = open('slurm_script.slurm','w')
+        target.write(slurm_script)
+        target.close()
+
+        self.transferFile()
+
+        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
+        p = subprocess.Popen(command,
+                             stdin=subprocess.PIPE,
+                             stdout=subprocess.PIPE,
+                             stderr=subprocess.PIPE)
+        stdout, stderr = p.communicate()
+
+
+        self.job_submit()
+        self.job_check()
+        self.error_check()
+        self.cleanup()
+        if(self.exitcode == 1):
+            print "Modules incorrectly loaded, check STDERR file. Also update configs/%s.wcfg"%self.kernel_name
+            sys.exit(1)
+        else:
+            print "All the modules are loaded correctly."
 
         #---------------------------------------------------------------------------------------------------------
         #Check if the execution is successful

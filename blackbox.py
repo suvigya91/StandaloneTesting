@@ -1,3 +1,12 @@
+
+"""
+Tool to test the proper loading of Supercomputer specific environments, modules
+and input files. Checks the execution in 3 phases:
+1. Check for proper initialization of tool
+2. Check for proper modules and environment on Supercomputer
+3. Check for complete execution with user input files
+"""
+
 import json
 import os
 import re
@@ -55,6 +64,9 @@ class Standalone():
 ##            self.inp_file.append(f)
 
     #------------------------------------------------------------------------------------------------
+    """
+    Parse user defined input files
+    """
     def inputFiles(self, inp_files):
         for f in inp_files:
             if('mininfile' in f):
@@ -72,9 +84,12 @@ class Standalone():
             elif('mdfile' in f):
                 key, self.mdfile = f.split('=')
                 self.mdfile,ext = (self.mdfile).split('*')
-                print 'mdfile= ',self.mdfile
+                #print 'mdfile= ',self.mdfile
             
     #--------------------------------------------------------------------------------------------------
+    """
+    Copy all the input files from user given path to working directory (~/StandaloneTest/user_input) 
+    """
     def copyFile(self,pwd):
         if (self.mininfile is not None):
             copyfile(self.mininfile, '%s/user_input/%s'%(self.home, os.path.basename(self.mininfile)))
@@ -108,6 +123,9 @@ class Standalone():
 
 
     #-------------------------------------------------------------------------------------------------------
+    """
+    Load all the configurations specific to the resource defined by user
+    """
     def loadConfig(self):
         home = expanduser("~")
         self.home = '%s/StandaloneTest'%home
@@ -145,6 +163,10 @@ class Standalone():
             raise
 
     #------------------------------------------------------------------------------------------------------
+    """
+    Generate script for job submission on resource
+    """
+    
     def generateSlurm(self,stage):
         self.loadConfig()
 
