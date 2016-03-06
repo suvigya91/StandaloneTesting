@@ -58,6 +58,20 @@ class Standalone():
         self.nwcoords = None    #md.crd
         self.refcoords = None   #min.crd
 
+        #----coco
+        self.mdfile = None      #*.ncdf
+
+        #----gromacs
+        self.runfile = None
+        self.mdpfile = None
+        self.startfile = None
+
+        #----lsdmap
+        self.configfile = None
+        self.weightfile = None
+        self.structfile = None
+        self.nnfile = None
+        
         self.inp_file = inp_files
 ##        self.inp_file = [];
 ##        for f in inp_file.split(" "):
@@ -85,6 +99,21 @@ class Standalone():
                 key, self.mdfile = f.split('=')
                 self.mdfile,ext = (self.mdfile).split('*')
                 #print 'mdfile= ',self.mdfile
+            elif('runfile' in f):
+                key, self.runfile = f.split('=')
+            elif('mdpfile' in f):
+                key, self.mdpfile = f.split('=')
+            elif('startfile' in f):
+                key, self.startfile = f.split('=')
+            elif('configfile' in f):
+                key, self.configfile = f.split('=')
+            elif('weightfile' in f):
+                key, self.weightfile = f.split('=')
+            elif('structfile' in f):
+                key, self.structfile = f.split('=')
+            elif('nnfile' in f):
+                key, self.nnfile = f.split('=')
+
             
     #--------------------------------------------------------------------------------------------------
     """
@@ -121,6 +150,33 @@ class Standalone():
                     shutil.copy2('%s%s'%(self.mdfile,ifile), '%s/user_input'%self.home)
             self.mdfile = '%s/user_input/*.ncdf'%(pwd)
 
+        if (self.runfile is not None):
+            copyfile(self.runfile, '%s/user_input/%s'%(self.home, os.path.basename(self.runfile)))
+            self.runfile = '%s/user_input/%s'%(pwd, os.path.basename(self.runfile))
+
+        if (self.mdpfile is not None):
+            copyfile(self.mdpfile, '%s/user_input/%s'%(self.home, os.path.basename(self.mdpfile)))
+            self.mdpfile = '%s/user_input/%s'%(pwd, os.path.basename(self.mdpfile))
+
+        if (self.startfile is not None):
+            copyfile(self.startfile, '%s/user_input/%s'%(self.home, os.path.basename(self.startfile)))
+            self.startfile = '%s/user_input/%s'%(pwd, os.path.basename(self.startfile))
+
+        if (self.configfile is not None):
+            copyfile(self.configfile, '%s/user_input/%s'%(self.home, os.path.basename(self.configfile)))
+            self.configfile = '%s/user_input/%s'%(pwd, os.path.basename(self.configfile))
+
+        if (self.weightfile is not None):
+            copyfile(self.weightfile, '%s/user_input/%s'%(self.home, os.path.basename(self.weightfile)))
+            self.weight = '%s/user_input/%s'%(pwd, os.path.basename(self.weightfile))
+
+        if (self.structfile is not None):
+            copyfile(self.structfile, '%s/user_input/%s'%(self.home, os.path.basename(self.structfile)))
+            self.structfile = '%s/user_input/%s'%(pwd, os.path.basename(self.structfile))
+
+        if (self.nnfile is not None):
+            copyfile(self.nnfile, '%s/user_input/%s'%(self.home, os.path.basename(self.nnfile)))
+            self.nnfile = '%s/user_input/%s'%(pwd, os.path.basename(self.nnfile))
 
     #-------------------------------------------------------------------------------------------------------
     """
@@ -218,6 +274,15 @@ class Standalone():
                 slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s/input/penta.top --mdfile %s/input/*.ncdf --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
                                                             self.exe, self.grid, self.dims, self.num_CUs, pwd,pwd,pwd,pwd,self.atom)
 
+            elif(self.kernel_name == "gromacs"):
+                print "Gromacs Batch File"
+                slurm_script += "\n\nibrun %s %s/input/run.py --mdp %s/input/grompp.mdp --gro %s/input/start.gro --top %s/input/topol.top --out %s/Output/out.gro"%(
+                                        self.exe, pwd, pwd, pwd, pwd,pwd)
+
+            elif(self.kernel_name == "lsdmap"):
+                print "LSDmap Batch File"
+                slurm_script += "\n\nibrun %s -f %s/input/config.ini -c %s/input/tmp.gro -n %s/input/out.nn -w %s/input/weight.w"%(
+                                        self.exe, pwd, pwd,pwd,pwd)
 
         #---------------------------------------------------------------------------------------------
         #test stage 2. Test for execution if module check is successful 
