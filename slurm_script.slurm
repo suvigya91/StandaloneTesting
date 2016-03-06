@@ -25,4 +25,4 @@ module load netcdf/4.3.2
 module load hdf5/1.8.13
 
 
-ibrun pyCoCo --grid 5 --dims 3 --frontpoints 4 --topfile ${HOME}/StandaloneTest/input/penta.top --mdfile ${HOME}/StandaloneTest/input/*.ncdf --output ${HOME}/StandaloneTest/Output/pdbs --logfile ${HOME}/StandaloneTest/Output/coco.log --mpi --selection prote
+ibrun pyCoCo --grid 5 --dims 3 --frontpoints 4 --topfile ${HOME}/StandaloneTest/user_input/penta.top --mdfile ${HOME}/StandaloneTest/user_input/*.ncdf --output ${HOME}/StandaloneTest/Output/pdbs --logfile ${HOME}/StandaloneTest/Output/coco.log --mpi --selection protein

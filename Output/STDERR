@@ -2,27 +2,3 @@
 The following have been reloaded with a version change:
   1) intel/15.0.2 => intel/13.0.2.146  2) mvapich2/2.1 => mvapich2/1.9a2
 
-Traceback (most recent call last):
-  File "/work/02998/ardi/coco_installation/bin/pyCoCo", line 4, in <module>
-    __import__('pkg_resources').run_script('extasy.coco==0.25', 'pyCoCo')
-  File "build/bdist.linux-x86_64/egg/pkg_resources/__init__.py", line 696, in run_script
-  File "build/bdist.linux-x86_64/egg/pkg_resources/__init__.py", line 1614, in run_script
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/extasy.coco-0.25-py2.7.egg/EGG-INFO/scripts/pyCoCo", line 267, in <module>
-    coco_ui(args)
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/extasy.coco-0.25-py2.7.egg/EGG-INFO/scripts/pyCoCo", line 101, in coco_ui
-    f.append(cofasu.Fasu(dict['topfile'],trj, filter=dict['selection'], owner = i % size))
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/pyPcazip-1.4.2-py2.7.egg/MDPlus/core/cofasu.py", line 220, in __init__
-    self.sel = self.u.selectAtoms(self.selection)
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/MDAnalysis-0.9.0-py2.7-linux-x86_64.egg/MDAnalysis/core/AtomGroup.py", line 3771, in selectAtoms
-    atomgrp = Selection.Parser.parse(sel, selgroups).apply(self)
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/MDAnalysis-0.9.0-py2.7-linux-x86_64.egg/MDAnalysis/core/Selection.py", line 933, in parse
-    parsetree = self.__parse_expression(0)
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/MDAnalysis-0.9.0-py2.7-linux-x86_64.egg/MDAnalysis/core/Selection.py", line 938, in __parse_expression
-    exp1 = self.__parse_subexp()
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/MDAnalysis-0.9.0-py2.7-linux-x86_64.egg/MDAnalysis/core/Selection.py", line 1053, in __parse_subexp
-    self.__error(op)
-  File "/work/02998/ardi/coco_installation/lib/python2.7/site-packages/MDAnalysis-0.9.0-py2.7-linux-x86_64.egg/MDAnalysis/core/Selection.py", line 921, in __error
-    raise ParseError("Parsing error- '" + self.selectstr + "'\n" + repr(token) + " expected")
-MDAnalysis.core.Selection.ParseError: Parsing error- 'prote'
-'prote' expected
-[c557-202.stampede.tacc.utexas.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 79220) exited with status 1

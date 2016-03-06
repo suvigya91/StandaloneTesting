@@ -9,12 +9,16 @@ import sys
 import argparse
 import imp
 import glob
+import shutil
+
+from shutil import copyfile
 from os.path import expanduser
 
-class Blackbox():
+class Standalone():
     def __init__(self,
                  name,
                  resource,
+                 inp_files,
                  grid = 5,
                  dims = 3,
                  num_CUs = 4,
@@ -37,16 +41,78 @@ class Blackbox():
         self.dims = dims
         self.num_CUs = num_CUs
         self.atom = atom
+        self.home = None
+        #--------------------------------------
+        self.mininfile = None   #min.in
+        self.topfile = None     #penta.top
+        self.crdfile = None     #penta.crd
+        self.nwinfo = None      #min.inf
+        self.nwcoords = None    #md.crd
+        self.refcoords = None   #min.crd
 
 ##        self.inp_file = [];
 ##        for f in inp_file.split(" "):
 ##            self.inp_file.append(f)
 
+    #------------------------------------------------------------------------------------------------
+    def inputFiles(self, inp_files):
+        for f in inp_files:
+            if('mininfile' in f):
+                key, self.mininfile = f.split('=')
+            elif('topfile' in f):
+                key, self.topfile = f.split('=')
+            elif('crdfile' in f):
+                key, self.crdfile = f.split('=')
+            elif('nwinfo' in f):
+                key, self.nwinfo = f.split('=')
+            elif('nwcoords' in f):
+                key, self.nwcoords = f.split('=')
+            elif('refcoords' in f):
+                key, self.refcoords = f.split('=')
+            elif('mdfile' in f):
+                key, self.mdfile = f.split('=')
+                self.mdfile,ext = (self.mdfile).split('*')
+                #print 'mdfile= ',self.mdfile
+            
+    #--------------------------------------------------------------------------------------------------
+    def copyFile(self,pwd):
+        if (self.mininfile is not None):
+            copyfile(self.mininfile, '%s/user_input/%s'%(self.home, os.path.basename(self.mininfile)))
+            self.mininfile = '%s/user_input/%s'%(pwd, os.path.basename(self.mininfile))
 
+        if (self.topfile is not None):
+            copyfile(self.topfile, '%s/user_input/%s'%(self.home, os.path.basename(self.topfile)))
+            self.topfile = '%s/user_input/%s'%(pwd, os.path.basename(self.topfile))
+
+        if (self.crdfile is not None):
+            copyfile(self.crdfile, '%s/user_input/%s'%(self.home, os.path.basename(self.crdfile)))
+            self.crdfile = '%s/user_input/%s'%(pwd, os.path.basename(self.crdfile))
+
+        if (self.nwinfo is not None):
+            copyfile(self.nwinfo, '%s/user_input/%s'%(self.home, os.path.basename(self.nwinfo)))
+            self.nwinfo = '%s/user_input/%s'%(pwd, os.path.basename(self.nwinfo))
+
+        if (self.nwcoords is not None):
+            copyfile(self.nwcoords, '%s/user_input/%s'%(self.home, os.path.basename(self.nwcoords)))
+            self.nwcoords = '%s/user_input/%s'%(pwd, os.path.basename(self.nwcoords))
+
+        if (self.refcoords is not None):
+            copyfile(self.refcoords, '%s/user_input/%s'%(self.home, os.path.basename(self.refcoords)))
+            self.refcoords = '%s/user_input/%s'%(pwd, os.path.basename(self.refcoords))
+
+        if (self.mdfile is not None):
+            for ifile in os.listdir(self.mdfile):
+                if ifile.endswith(".ncdf"):
+                    shutil.copy2('%s%s'%(self.mdfile,ifile), '%s/user_input'%self.home)
+            self.mdfile = '%s/user_input/*.ncdf'%(pwd)
+
+
+    #-------------------------------------------------------------------------------------------------------
     def loadConfig(self):
-        self.home = expanduser("~")
+        home = expanduser("~")
+        self.home = '%s/workspace/StandaloneTest'%home
         try:
-            with open('%s/workspace/StandaloneTest/configs/machine_config.json'%self.home) as data_file:
+            with open('%s/configs/machine_config.json'%self.home) as data_file:
                 config = json.load(data_file)
 
             if(self.kernel_name == "amber"):
@@ -78,7 +144,7 @@ class Blackbox():
             print 'error'
             raise
 
-
+    #------------------------------------------------------------------------------------------------------
     def generateSlurm(self,stage):
         self.loadConfig()
         #print self.pre_exec
@@ -134,27 +200,36 @@ class Blackbox():
         #---------------------------------------------------------------------------------------------
         #test stage 2. Test for execution if module check is successful 
         if(stage == 1):
+            self.inputFiles(self.inp_file)
+            self.copyFile(pwd)
+
             if (self.kernel_name == "amber"): 
                 print "Amber Batch File"
-                slurm_script += "\n\nibrun %s -O -i %s/user_input/min.in -o %s/Output/min.out -inf %s/user_input/min.inf -r %s/user_input/md.crd -p %s/user_input/penta.top -c %s/user_input/penta.crd -ref %s/user_input/min.crd \n"\
-                                                              %(self.exe, pwd, pwd, pwd,pwd,pwd, pwd,pwd)
+                slurm_script += "\n\nibrun %s -O -i %s -o %s/Output/min.out -inf %s -r %s -p %s -c %s -ref %s \n"\
+                                                              %(self.exe, self.mininfile, pwd, self.nwinfo ,self.nwcoords,self.topfile, self.crdfile,self.refcoords)
 
             elif(self.kernel_name == "coco"):
                 print "CoCo Batch file"
-                slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s/user_input/penta.top --mdfile %s/user_input/*.ncdf --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
-                                                            self.exe, self.grid, self.dims, self.num_CUs, pwd,pwd,pwd,pwd,self.atom)
+                slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s --mdfile %s --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
+                                                            self.exe, self.grid, self.dims, self.num_CUs, self.topfile,self.mdfile,pwd,pwd,self.atom)
+
+##            elif(self.kernel_name == "coco"):
+##                print "CoCo Batch file"
+##                slurm_script += "\n\nibrun %s --grid %s --dims %s --frontpoints %s --topfile %s/user_input/penta.top --mdfile %s/user_input/*.ncdf --output %s/Output/pdbs --logfile %s/Output/coco.log --mpi --selection %s" %(
+##                                                            self.exe, self.grid, self.dims, self.num_CUs, pwd,pwd,pwd,pwd,self.atom)
 
         return slurm_script
 
 
+    #-----------------------------------------------------------------------------------------------------
     def transferFile(self):
         #Transfer file to remote machine
-        files = glob.glob('%s/workspace/StandaloneTest/Output/*'%self.home)
+        files = glob.glob('%s/Output/*'%self.home)
         for f in files:
             os.remove(f)
         
         print "Transferring files to remote machine"
-        p = subprocess.Popen(['scp', '-r', '%s/workspace/StandaloneTest/'%self.home , '%s@stampede.tacc.utexas.edu:/%s'%(self.uname,self.wdir)],
+        p = subprocess.Popen(['scp', '-r', '%s/'%self.home , '%s@stampede.tacc.utexas.edu:/%s'%(self.uname,self.wdir)],
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
@@ -168,7 +243,7 @@ class Blackbox():
                 sys.exit(1)
 
 
-
+    #---------------------------------------------------------------------------------------------------------
     def job_submit(self):
         #Submit job
         print "Submitting slurm job"
@@ -213,7 +288,7 @@ class Blackbox():
         print "--------> %s <---------"%state
 
 
-
+    #---------------------------------------------------------------------------------------------------------------
     def error_check(self):
         if(self.kernel_name == "amber" or self.kernel_name == "coco" or self.kernel_name == "lsdmap"):
             print "checking error in %s"%self.kernel_name
@@ -247,11 +322,11 @@ class Blackbox():
                         #print "Execution Successful. All the modules are loaded correctly. Exit code = %s"%self.exitcode
 
 
-
+    #------------------------------------------------------------------------------------------------------------------
     def cleanup(self):
         #Transfer files from remote to local machine
         print "Transfer output to local machine"
-        p = subprocess.Popen(['scp', '-r', '%s@stampede.tacc.utexas.edu:/%s/StandaloneTest/Output/'%(self.uname,self.wdir), '%s/workspace/StandaloneTest/'%self.home ],
+        p = subprocess.Popen(['scp', '-r', '%s@stampede.tacc.utexas.edu:/%s/StandaloneTest/Output/'%(self.uname,self.wdir), '%s/'%self.home ],
                              stdin=subprocess.PIPE,
                              stdout=subprocess.PIPE,
                              stderr=subprocess.PIPE)
@@ -280,43 +355,50 @@ class Blackbox():
         print "Removed all the files from remote machine"
 
 
-
+    #--------------------------------------------------------------------------------------------------------
     def run(self):
-##        #-------------------------------------------------------------------------------------------------------
-##        #check input args
-##        if (self.kernel_name == 'amber' and len(self.inp_file) != 6):
-##            print "Amber requires 6 files"
-##            sys.exit(1)
-##
-##        elif(self.kernel_name == 'coco' and len(self.inp_file) != 6):
-        #self.generateSlurm()
-        #--------------------------------------------------------------------------------------------------------
-        #Check if all modules are loaded correctly
-        slurm_script = self.generateSlurm(0)
-       
-        target = open('slurm_script.slurm','w')
-        target.write(slurm_script)
-        target.close()
-
-        self.transferFile()
-
-        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
-        p = subprocess.Popen(command,
-                             stdin=subprocess.PIPE,
-                             stdout=subprocess.PIPE,
-                             stderr=subprocess.PIPE)
-        stdout, stderr = p.communicate()
-
-
-        self.job_submit()
-        self.job_check()
-        self.error_check()
-        self.cleanup()
-        if(self.exitcode == 1):
-            print "Modules incorrectly loaded, check STDERR file. Also update configs/%s.wcfg"%self.kernel_name
+        #-------------------------------------------------------------------------------------------------------
+        #check input args
+        if (self.kernel_name == 'amber' and len(self.inp_file) != 6):
+            print "Amber requires 6 files"
             sys.exit(1)
-        else:
-            print "All the modules are loaded correctly."
+
+        elif(self.kernel_name == 'coco' and len(self.inp_file) != 2):
+            print "Coco requires 2 files"
+            sys.exit(1)
+
+        #self.generateSlurm()
+##        #--------------------------------------------------------------------------------------------------------
+##        #Check if all modules are loaded correctly
+##        files = glob.glob('%s/user_input/*'%self.home)
+##        for f in files:
+##            os.remove(f)
+##
+##        slurm_script = self.generateSlurm(0)
+##       
+##        target = open('slurm_script.slurm','w')
+##        target.write(slurm_script)
+##        target.close()
+##
+##        self.transferFile()
+##
+##        command =  ['ssh','%s@stampede.tacc.utexas.edu'%self.uname,'chmod', '-R','a+rX','%s/StandaloneTest/'%self.wdir]
+##        p = subprocess.Popen(command,
+##                             stdin=subprocess.PIPE,
+##                             stdout=subprocess.PIPE,
+##                             stderr=subprocess.PIPE)
+##        stdout, stderr = p.communicate()
+##
+##
+##        self.job_submit()
+##        self.job_check()
+##        self.error_check()
+##        self.cleanup()
+##        if(self.exitcode == 1):
+##            print "Modules incorrectly loaded, check STDERR file. Also update configs/%s.wcfg"%self.kernel_name
+##            sys.exit(1)
+##        else:
+##            print "All the modules are loaded correctly."
 
         #---------------------------------------------------------------------------------------------------------
         #Check if the execution is successful
