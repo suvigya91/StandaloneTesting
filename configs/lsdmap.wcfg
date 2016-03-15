@@ -26,3 +26,11 @@ stampede_module	     = ["module load TACC",
 			"module load -intel +intel/14.0.1.106",
 			"module load python/2.7.6"]
 
+module_test_file     = ["-f=./input/config.ini",
+                        "-w=./input/weight.w",
+                        "-c=./input/tmp.gro",
+                        "-n=./input/out.nn"]
+output_file	     = None
+param		     = None
+only_args	     = None
+

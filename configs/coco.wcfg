@@ -30,3 +30,10 @@ stampede_module		= ["module load TACC",
                            "module load python/2.7.9",
                            "module load netcdf/4.3.2",
                            "module load hdf5/1.8.13"]
+module_test_file	= ["--topfile=/home/suvigya/inp/penta.top",
+                           "--mdfile=/home/suvigya/inp/*.ncdf"]
+output_file		= ["--output=pdbs",
+			   "--logfile=coco.log"]
+param			= ["--grid=5",
+			   "--dims=3",
+			   "--frontpoints=4"]

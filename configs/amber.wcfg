@@ -24,3 +24,12 @@ stampede_module		= ["module load TACC",
                            "module load python/2.7.9",
                            "module load netcdf/4.3.2",
                            "module load hdf5/1.8.13"]
+module_test_file	= ["-i=/home/suvigya/inp/min.in",
+                           "-p=/home/suvigya/inp/penta.top",
+                           "-c=/home/suvigya/inp/penta.crd",
+                           "-inf=/home/suvigya/inp/min.inf",
+                           "-r=/home/suvigya/inp/md.crd",
+                           "-ref=/home/suvigya/inp/min.crd"]
+output_file		= ["-o=min.out"]
+param			= None
+only_args		= ["-O"]
