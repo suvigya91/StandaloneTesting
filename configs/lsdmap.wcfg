@@ -1,23 +1,4 @@
-#-------------------------Applications----------------------
-analyzer              = 'LSDMap'            # Analyzer to be loaded
-
-#--------------------------General--------------------------------
-num_CUs              = 16                  # Number of tasks or Compute Units
-num_iterations       = 1                    # Number of iterations of Simulation-Analysis
-start_iter           = 0                    # Iteration number with which to start
-nsave                = 11                    # # Iterations after which output is transfered to local machine
-
-#--------------------------Analysis----------------------------------
-lsdm_config_file     = './inp_files/config.ini'       # Entire path to the LSDMap configuration file - Do not use $HOME or the likes
-num_runs             = 1000                # Number of runs to be performed in the Selection step in Analysis
-w_file               = 'weight.w'           # Filename to be used for the weight file
-max_alive_neighbors  = '10'                 # Maximum alive neighbors to be considered while reweighting
-max_dead_neighbors   = '1'                  # Maximum dead neighbors to be considered while reweighting
-
-#--------------------------Misc----------------------------------
-misc_loc = './misc_files'
-
-#------------Stampede specific environment and modules-----------
+#-------------LSDmap specific environment and modules for stampede---------------
 
 stampede_environment = ["export PYTHONPATH=/home1/03036/jp43/.local/lib/python2.7/site-packages", 
 			"export PATH=/home1/03036/jp43/.local/bin:$PATH"]
@@ -26,11 +7,5 @@ stampede_module	     = ["module load TACC",
 			"module load -intel +intel/14.0.1.106",
 			"module load python/2.7.6"]
 
-module_test_file     = ["-f=./input/config.ini",
-                        "-w=./input/weight.w",
-                        "-c=./input/tmp.gro",
-                        "-n=./input/out.nn"]
 output_file	     = None
-param		     = None
-only_args	     = None
 
